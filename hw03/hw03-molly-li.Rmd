@@ -1,0 +1,84 @@
+---
+title: "hw03-molly-li"
+author: "Molly Li"
+date: "3/16/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+# 2.1) Write a pipeline to obtain the unique team names, and redirect the output to a text file team-names.txt. Use head to display the first five lines of the created file (output shown belown).
+```{bash}
+cut -d "," -f 2 nba2017-roster.csv| tail +2 |sort -u > team-names.txt
+head -n 5 team-names.txt
+```
+
+
+
+
+# 2.2) Write a pipeline to obtain the unique positions, and redirect the output to a text file position-names.txt. Use head to display the first five lines of the created file (output shown belown).
+```{bash}
+cut -d "," -f 3 nba2017-roster.csv | tail +2 | sort -u > position-names.txt
+head -n 5 position-names.txt
+```
+
+# 2.3) Write a pipeline to obtain the counts (i.e. frequencies) of the different experience values, displayed from largest to smallest (i.e. descending order). Redirect the output to a text file experience-counts.txt. Use head to display the first five lines of the created file (output shown belown). The first column corresponds to count, the second column corresponds to experience.
+```{bash}
+cut -d "," -f 7 nba2017-roster.csv | tail +2 | sort | uniq -c | sort -r > experience-counts.txt
+head -n 5 experience-counts.txt
+```
+
+# 2.4) Use output redirection commands to create a CSV file LAC.csv containing data for the LAC team (Los Angeles Clippers). Your CSV file should include column names. Use cat to display the content of the created file (output shown belown)
+```{bash}
+grep -e "LAC\|team" nba2017-roster.csv > LAC.csv
+cat LAC.csv
+```
+
+# 2.5) Write a pipeline to display the age frequencies of LAL players. The first column corresponds to count, the second column corresponds to age.
+```{bash}
+grep -E "LAL|player" nba2017-roster.csv | cut -d "," -f 6 | tail +2 | sort -n | uniq -c
+```
+
+# 2.6) Write a pipeline to find the number of players in CLE (Cleveland) team; the output should be just the number of players.
+```{bash}
+grep -e CLE nba2017-roster.csv | wc -l
+```
+
+# 2.7) Write pipelines to create a CSV file gsw-height-weight.csv that contains the player, height and weight of GSW players. Your CSV file should include column names. Use cat to display the file contents:
+```{bash}
+grep -e "GSW\|team" nba2017-roster.csv | cut -d "," -f 1,4,5 > gsw-height-weight.csv
+cat gsw-height-weight.csv
+```
+
+# 2.8) Write pipelines to create a file top10-salaries.csv containing the top10 player salaries, arranged by salary from largest to smallest. Your CSV file should include column names. Use cat to display the file contents:
+```{bash}
+cut -d "," -f 1,8 nba2017-roster.csv | head -n 1 > top10-salaries.csv
+cut -d "," -f 1,8 nba2017-roster.csv | tail +2 | sort -t "," -k 2 -n -r | head >> top10-salaries.csv
+cat top10-salaries.csv
+```
+
+```{r}
+source('code/binomial-functions.R')
+# Assume that the “successful” event is getting a “six” when rolling a die. Consider rolling a fair die 10 times. Use bin_probability() to find the probability of getting exactly 3 sixes.
+bin_probability(trials = 10, success = 3, prob = 1/6)
+
+# Use bin_distribution() to obtain the distribution of the number of “sixes” when rolling a loaded die 10 times, in which the number “six” has probability of 0.25. Make a plot of this distribution.
+bin_distribution(trials = 10, prob = 0.25)
+plot(bin_distribution(10, 0.25))
+
+# Use bin_probability(), and a for loop, to obtain the probability of getting more than 3 heads in 5 tosses with a biased coin of 35% chance of heads.
+probability = 0
+for (k in 4:5) {
+    probability = probability + bin_probability(5, k, 0.35)
+  }
+probability
+
+# Use bin_distribution() to obtain the probability distribution of the number of heads when tossing a loaded coin 15 times, with 35% chance of heads. Make a plot of this distribution.
+bin_distribution(trials = 15, prob = 0.35)
+plot(bin_distribution(15, 0.35))
+```
